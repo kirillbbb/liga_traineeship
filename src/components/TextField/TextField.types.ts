@@ -1,15 +1,12 @@
-// src/components/TextField/TextField.types.ts
-import { ChangeEventHandler, HTMLInputTypeAttribute, FocusEventHandler } from 'react';
+import { InputHTMLAttributes, TextareaHTMLAttributes } from 'react';
 
-export interface TextFieldProps {
+interface BaseTextFieldProps {
   label: string;
-  placeholder?: string;
-  inputType?: HTMLInputTypeAttribute;
   containerClassName?: string;
-  value?: string;
-  onChange?: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
-  onBlur?: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   errorText?: string;
   multiline?: boolean;
   rows?: number;
+  inputType?: string;
 }
+
+export interface TextFieldProps extends BaseTextFieldProps, InputHTMLAttributes<HTMLInputElement> {}

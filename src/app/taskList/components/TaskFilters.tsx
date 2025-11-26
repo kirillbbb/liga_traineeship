@@ -1,56 +1,62 @@
-import React, { ChangeEvent } from 'react';
-import { Checkbox } from 'components/Checkbox';
-import { SearchInput } from 'components/SearchInput';
+import React from 'react';
 
-interface Props {
-  search: string;
-  setSearch: (v: string) => void;
-  completedOnly: boolean;
-  setCompletedOnly: (v: boolean) => void;
-  importantOnly: boolean;
-  setImportantOnly: (v: boolean) => void;
-}
+import { useAppDispatch, useAppSelector } from 'app/integration/hooks';
+import { setSearch, toggleCompleted, toggleImportant } from 'app/integration/filterSlice';
 
-const TaskFiltersComponent: React.FC<Props> = ({
-  search,
-  setSearch,
-  completedOnly,
-  setCompletedOnly,
-  importantOnly,
-  setImportantOnly,
-}) => {
-  const handleCompletedChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCompletedOnly(e.target.checked);
+const TaskFilters: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { search, isCompleted, isImportant } = useAppSelector((state) => state.filters);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSearch(e.target.value));
   };
 
-  const handleImportantChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setImportantOnly(e.target.checked);
+  const handleCompletedToggle = () => {
+    dispatch(toggleCompleted());
   };
 
-  const handleResetSearch = () => {
-    setSearch('');
+  const handleImportantToggle = () => {
+    dispatch(toggleImportant());
   };
 
   return (
-    <div style={{ marginBottom: 20 }}>
-      <SearchInput value={search} onChange={setSearch} onReset={handleResetSearch} />
-
-      <Checkbox
-        label="Completed only"
-        checked={completedOnly}
-        onChange={handleCompletedChange}
-        containerClassName="d-inline-block me-3"
+    <div className="task-filters d-flex justify-content-start gap-3 p-3">
+      <input
+        type="text"
+        className="form-control"
+        placeholder="Search tasks..."
+        value={search}
+        onChange={handleSearchChange}
+        style={{ width: '250px' }}
       />
 
-      <Checkbox
-        label="Important only"
-        checked={importantOnly}
-        onChange={handleImportantChange}
-        containerClassName="d-inline-block"
-      />
+      <div className="form-check form-check-inline">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          id="completedOnly"
+          checked={isCompleted}
+          onChange={handleCompletedToggle}
+        />
+        <label className="form-check-label" htmlFor="completedOnly">
+          Completed Only
+        </label>
+      </div>
+
+      <div className="form-check form-check-inline">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          id="importantOnly"
+          checked={isImportant}
+          onChange={handleImportantToggle}
+        />
+        <label className="form-check-label" htmlFor="importantOnly">
+          Important Only
+        </label>
+      </div>
     </div>
   );
 };
 
-const TaskFilters = React.memo(TaskFiltersComponent);
-export default TaskFilters;
+export default React.memo(TaskFilters);

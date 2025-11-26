@@ -59,6 +59,7 @@
     "lint-staged": "13.0.1",
     "loader-utils": "3.2.0",
     "mini-css-extract-plugin": "2.6.0",
+    "openapi-typescript": "^6.7.0",
     "postcss-combine-media-query": "1.0.1",
     "postcss-discard-duplicates": "5.1.0",
     "postcss-flexbugs-fixes": "5.0.2",

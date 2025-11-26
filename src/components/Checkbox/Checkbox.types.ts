@@ -1,10 +1,12 @@
-import { ChangeEventHandler, FocusEventHandler } from 'react';
+import React, { InputHTMLAttributes } from 'react';
 
-export interface CheckboxProps {
+interface BaseCheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  checked?: boolean;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
   containerClassName?: string;
-  disabled?: boolean;
-  onBlur?: FocusEventHandler<HTMLInputElement>;
+}
+
+export interface CheckboxProps extends BaseCheckboxProps {
+  checked: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
 }

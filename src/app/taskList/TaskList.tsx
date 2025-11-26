@@ -1,42 +1,54 @@
-import React, { useMemo, useState } from 'react';
+// src/app/taskList/TaskList.tsx
 
-import TaskFilters from './components/TaskFilters';
+import React, { useCallback } from 'react';
+
+// ✅ ИСПРАВЛЕНИЕ 1: Импорт RootState (для типизации Redux)
 import TaskItem from './components/TaskItem';
-import { useGetTasksQuery, useDeleteTaskMutation } from 'api/tasksApi';
-import { Task } from 'types/task';
+import { RootState } from 'app/integration/store';
+import { useAppSelector } from 'app/integration/hooks';
 
+import { useGetTasksQuery, useDeleteTaskMutation, useUpdateTaskMutation } from 'services/taskApi';
+import { Task, GetTasksParams } from 'types/task';
 import { Loader } from 'components/Loader';
 import { PageContainer } from 'components/PageContainer';
-
 import { TaskAdd } from 'app/taskAdd/TaskAdd';
 
 const TaskListComponent: React.FC = () => {
-  const [search, setSearch] = useState('');
-  const [completedOnly, setCompletedOnly] = useState(false);
-  const [importantOnly, setImportantOnly] = useState(false);
+  const filtersState = useAppSelector((state) => state.filters);
 
-  const { data: tasks, isLoading, isError, error } = useGetTasksQuery();
-  const [deleteTask] = useDeleteTaskMutation();
-
-  const handleDeleteTask = (taskId: string) => {
-    deleteTask(taskId);
+  const filters: GetTasksParams = {
+    isCompleted: filtersState.isCompleted || undefined,
+    isImportant: filtersState.isImportant || undefined,
+    name_like: filtersState.search.trim() || undefined,
   };
 
-  const filteredTasks = useMemo(() => {
-    const taskArray: Task[] = tasks || [];
+  const { data: tasks, isLoading, isError, error } = useGetTasksQuery(filters);
+  const [deleteTask] = useDeleteTaskMutation();
+  const [updateTask] = useUpdateTaskMutation();
 
-    return taskArray
-      .filter((t) => (t.title || '').toLowerCase().includes(search.toLowerCase().trim()))
-      .filter((t) => (completedOnly ? t.isCompleted : true))
-      .filter((t) => (importantOnly ? t.isImportant : true));
-  }, [tasks, search, completedOnly, importantOnly]);
+  const handleDeleteTask = useCallback(
+    (taskId: string) => {
+      deleteTask(taskId);
+    },
+    [deleteTask]
+  );
+
+  const handleToggleComplete = useCallback(
+    (taskId: string, isCompleted: boolean) => {
+      updateTask({
+        id: taskId,
+        body: {
+          isCompleted: isCompleted,
+        },
+      });
+    },
+    [updateTask]
+  );
+
+  const displayTasks: Task[] = tasks || [];
 
   return (
     <PageContainer>
-      <h1>Task List</h1>
-
-      <TaskAdd />
-
       <Loader isLoading={isLoading}>
         {isError && (
           <div className="alert alert-danger" role="alert">
@@ -44,21 +56,12 @@ const TaskListComponent: React.FC = () => {
           </div>
         )}
 
-        <TaskFilters
-          search={search}
-          setSearch={setSearch}
-          completedOnly={completedOnly}
-          setCompletedOnly={setCompletedOnly}
-          importantOnly={importantOnly}
-          setImportantOnly={setImportantOnly}
-        />
-
-        {filteredTasks.length === 0 ? (
-          <p>No tasks found.</p>
+        {displayTasks.length === 0 && !isLoading ? (
+          <p className="mt-4">No tasks found.</p>
         ) : (
           <div className="list-group">
-            {filteredTasks.map((task) => (
-              <TaskItem key={task.id} task={task} onDelete={() => handleDeleteTask(task.id)} />
+            {displayTasks.map((task) => (
+              <TaskItem key={task.id} task={task} onDelete={handleDeleteTask} onToggleComplete={handleToggleComplete} />
             ))}
           </div>
         )}

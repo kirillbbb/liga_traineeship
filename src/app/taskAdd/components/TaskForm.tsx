@@ -1,32 +1,35 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { taskSchema } from 'app/taskAdd/validation';
-import { CreateTaskDto, Task } from 'types/task';
+
+import { Button } from 'components/Button/Button';
+import { taskValidationSchema, TaskFormValues } from 'app/taskAdd/validation';
 import { Checkbox } from 'components/Checkbox';
 import { TextField } from 'components/TextField';
 
+type FormData = TaskFormValues;
+
 interface Props {
-  onSubmit: (data: CreateTaskDto) => void;
-  defaultValues?: Task;
-  isEdit?: boolean;
+  initialData?: TaskFormValues;
+  onSubmit: (data: FormData) => void;
   onCancel?: () => void;
+  isSubmitting?: boolean;
 }
 
-const TaskFormComponent: React.FC<Props> = ({ onSubmit, defaultValues, onCancel }) => {
+const TaskFormComponent: React.FC<Props> = ({ onSubmit, initialData, onCancel, isSubmitting = false }) => {
   const {
     handleSubmit,
     control,
     watch,
     formState: { errors },
-  } = useForm<CreateTaskDto>({
-    defaultValues: defaultValues || {
-      title: '',
-      description: '',
-      isCompleted: false,
-      isImportant: false,
+  } = useForm<TaskFormValues>({
+    defaultValues: {
+      title: initialData?.title ?? '',
+      description: initialData?.description ?? '',
+      isCompleted: initialData?.isCompleted ?? false,
+      isImportant: initialData?.isImportant ?? false,
     },
-    resolver: yupResolver(taskSchema),
+    resolver: yupResolver(taskValidationSchema),
   });
 
   const isCompleted = watch('isCompleted');
@@ -37,7 +40,13 @@ const TaskFormComponent: React.FC<Props> = ({ onSubmit, defaultValues, onCancel 
         name="title"
         control={control}
         render={({ field }) => (
-          <TextField {...field} label="Title" placeholder="Enter task title" errorText={errors.title?.message} />
+          <TextField
+            {...field}
+            label="Название задачи"
+            placeholder="Что нужно сделать?"
+            errorText={errors.title?.message}
+            disabled={isSubmitting}
+          />
         )}
       />
 
@@ -47,50 +56,53 @@ const TaskFormComponent: React.FC<Props> = ({ onSubmit, defaultValues, onCancel 
         render={({ field }) => (
           <TextField
             {...field}
-            label="Description"
-            placeholder="Enter task description"
-            multiline={true}
+            label="Описание"
+            placeholder="Подробности (необязательно)"
+            multiline
+            rows={3}
             errorText={errors.description?.message}
+            disabled={isSubmitting}
           />
         )}
       />
 
-      <Controller
-        name="isCompleted"
-        control={control}
-        render={({ field }) => (
-          <Checkbox
-            label="Completed"
-            checked={field.value}
-            onChange={(e) => field.onChange(e.target.checked)}
-            onBlur={field.onBlur}
-          />
-        )}
-      />
+      <div style={{ display: 'flex', gap: '20px', margin: '15px 0' }}>
+        <Controller
+          name="isImportant"
+          control={control}
+          render={({ field: { value: rhfValue, ...restField } }) => (
+            <Checkbox
+              {...restField}
+              checked={rhfValue}
+              onChange={(e) => restField.onChange(e.target.checked)}
+              label="Важная задача"
+              disabled={isSubmitting}
+            />
+          )}
+        />
+        <Controller
+          name="isCompleted"
+          control={control}
+          render={({ field: { value: rhfValue, ...restField } }) => (
+            <Checkbox
+              {...restField}
+              checked={rhfValue}
+              onChange={(e) => restField.onChange(e.target.checked)}
+              label="Завершено"
+              disabled={isSubmitting}
+            />
+          )}
+        />
+      </div>
 
-      <Controller
-        name="isImportant"
-        control={control}
-        render={({ field }) => (
-          <Checkbox
-            label="Important"
-            checked={field.value}
-            onChange={(e) => field.onChange(e.target.checked)}
-            onBlur={field.onBlur}
-            disabled={isCompleted}
-          />
-        )}
-      />
-
-      <div className="d-flex justify-content-between mt-3">
-        <button className="btn btn-primary" type="submit">
-          {defaultValues ? 'Save Changes' : 'Add Task'}
-        </button>
-
+      <div className="form-actions" style={{ marginTop: '20px' }}>
+        <Button type="submit" disabled={isSubmitting} isLoading={isSubmitting}>
+          Сохранить
+        </Button>
         {onCancel && (
-          <button type="button" className="btn btn-secondary" onClick={onCancel}>
-            Cancel
-          </button>
+          <Button variant="secondary" onClick={onCancel} disabled={isSubmitting}>
+            Отмена
+          </Button>
         )}
       </div>
     </form>

@@ -1,13 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { tasksApi } from '../../api/tasksApi';
+
+// Импорт базового API среза
+import { api } from '../../services/api';
+import filterReducer from './filterSlice';
+
 import logger from './middlewares/logger';
 import debug from './middlewares/debug';
 
 export const store = configureStore({
   reducer: {
-    [tasksApi.reducerPath]: tasksApi.reducer,
+    filters: filterReducer,
+    [api.reducerPath]: api.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(tasksApi.middleware, logger, debug),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware, logger, debug),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

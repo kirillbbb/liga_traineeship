@@ -1,0 +1,124 @@
+
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Task CRUD API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://tasks-service-maks1394.amvera.io"
+    }
+  ],
+  "paths": {
+    "/tasks": {
+      "get": {
+        "summary": "Получить все задачи (с фильтрацией)",
+        "parameters": [
+          { "name": "isImportant", "in": "query", "schema": { "type": "boolean" } },
+          { "name": "name_like", "in": "query", "schema": { "type": "string" } },
+          { "name": "isCompleted", "in": "query", "schema": { "type": "boolean" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное получение списка задач",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Task"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Создать новую задачу",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateTaskDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Задача успешно создана",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Task" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "parameters": [
+        { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+      ],
+      "get": {
+        "summary": "Получить задачу по ID",
+        "responses": {
+          "200": { "description": "Успешное получение задачи", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Task" } } } }
+        }
+      },
+      "patch": {
+        "summary": "Обновить задачу",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateTaskDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Задача успешно обновлена", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Task" } } } }
+        }
+      },
+      "delete": {
+        "summary": "Удалить задачу",
+        "responses": {
+          "200": { "description": "Задача успешно удалена", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean" }, "id": { "type": "string" } } } } } }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "isCompleted": { "type": "boolean" },
+          "isImportant": { "type": "boolean" }
+        },
+        "required": ["id", "title", "description"]
+      },
+      "CreateTaskDto": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "isCompleted": { "type": "boolean" },
+          "isImportant": { "type": "boolean" }
+        },
+        "required": ["title", "description"]
+      },
+      "UpdateTaskDto": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "isCompleted": { "type": "boolean" },
+          "isImportant": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

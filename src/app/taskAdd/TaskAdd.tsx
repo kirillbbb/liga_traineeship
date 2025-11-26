@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import TaskForm from './components/TaskForm';
-
-import { useAddTaskMutation } from 'api/tasksApi';
-import { CreateTaskDto } from 'types/task';
+import { TaskFormValues } from './validation';
 import { Loader } from 'components/Loader';
+
+import { useCreateTaskMutation } from 'services/taskApi';
 
 export function TaskAdd() {
   const [isAdding, setIsAdding] = useState(false);
 
-  const [addTask, { isLoading: isCreating }] = useAddTaskMutation();
+  const [createTask, { isLoading: isCreating, isError: isCreateError }] = useCreateTaskMutation();
 
-  const handleAddTask = (data: CreateTaskDto) => {
-    addTask(data)
+  const handleAddTask = (data: TaskFormValues) => {
+    createTask(data)
       .unwrap()
-      .then(() => setIsAdding(false))
+      .then(() => {
+        setIsAdding(false);
+      })
       .catch((err: any) => {
         console.error('Failed to create task:', err);
       });
@@ -27,16 +29,13 @@ export function TaskAdd() {
         disabled={isCreating}>
         {isAdding ? 'Close Form' : 'Add New Task'}
       </button>
-
       {isAdding && (
         <div className="card p-4 mt-3">
           <h2>Create New Task</h2>
-          <TaskForm onSubmit={handleAddTask} onCancel={() => setIsAdding(false)} />
-          {isCreating && (
-            <Loader isLoading={true} variant="dot">
-              <></>
-            </Loader>
-          )}
+
+          {isCreateError && <div className="text-danger mb-3">Не удалось сохранить задачу. Попробуйте снова.</div>}
+
+          <TaskForm onSubmit={handleAddTask} onCancel={() => setIsAdding(false)} isSubmitting={isCreating} />
         </div>
       )}
     </div>

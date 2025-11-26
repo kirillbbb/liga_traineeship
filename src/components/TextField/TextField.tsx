@@ -1,11 +1,9 @@
-// src/components/TextField/TextField.tsx
-import React from 'react';
+import React, { InputHTMLAttributes } from 'react';
 import { TextFieldProps } from './TextField.types';
 import './TextField.css';
 
 export function TextField({
   label,
-  placeholder,
   containerClassName = '',
   inputType = 'text',
   value,
@@ -20,15 +18,16 @@ export function TextField({
   const inputProps = multiline ? { rows } : { type: inputType };
 
   return (
-    <div className={`mb-3 ${containerClassName}`}>
-      <label htmlFor={label} className="form-label">
+    <div className={`field mb-3 ${containerClassName}`}>
+      <label htmlFor={label} className="field__label">
         {label}
       </label>
+
       <InputElement
         {...inputProps}
-        className="form-control"
+        className="field__input"
         id={label}
-        placeholder={placeholder}
+        placeholder=" "
         value={value}
         onChange={onChange as any}
         onBlur={onBlur as any}

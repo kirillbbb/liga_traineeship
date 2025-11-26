@@ -1,0 +1,55 @@
+/* src/styles/modules/_fields.scss */
+
+.field {
+  position: relative;
+
+  /* АНИМАЦИЯ ПЛЕЙСХОЛДЕРА */
+  &:focus-within .field__label,
+  &:has(.field__input:not(:placeholder-shown)) .field__label,
+  &:has(textarea:not(:placeholder-shown)) .field__label {
+    color: var(--color-black);
+    scale: 0.7;
+    translate: -1.75em -2.6em;
+  }
+}
+
+.field__label {
+  position: absolute;
+  top: 50%;
+  left: 17px;
+  color: var(--color-gray-3);
+  translate: 0 -50%;
+  transition: all var(--transition-duration) ease;
+  pointer-events: none;
+}
+
+.field__input {
+  --fieldInputPaddingX: 16px;
+  width: 100%;
+  height: var(--input-height);
+  padding-inline: var(--fieldInputPaddingX);
+  background-color: transparent;
+  border: var(--border);
+  border-radius: var(--border-radius);
+
+  &:hover,
+  &:focus {
+    border-color: var(--color-dark-2);
+  }
+  &:focus {
+    background-color: var(--color-gray-1);
+    outline: none;
+  }
+
+  /* Стили для Textarea */
+  &[type="textarea"] {
+    height: auto;
+    min-height: 80px;
+    padding-top: 10px;
+  }
+
+  /* Стиль для поиска без иконки */
+  &[type="search"]:placeholder-shown {
+    padding-right: var(--fieldInputPaddingX);
+  }
+}

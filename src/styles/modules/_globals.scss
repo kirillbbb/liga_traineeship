@@ -1,0 +1,37 @@
+/* src/styles/modules/_globals.scss */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap');
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  min-height: 100vh;
+  padding: 100px 30px;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-gray-1);
+}
+
+input, label, button {
+  transition-duration: var(--transition-duration);
+}
+
+:focus-visible {
+  outline: 2px dashed var(--color-black);
+  outline-offset: 4px;
+  transition-duration: 0s  !important ;
+}
+
+/* Utils: */
+.visually-hidden {
+  position: absolute  !important ;
+  width: 1px  !important ;
+  height: 1px  !important ;
+  margin: -1px  !important ;
+  border: 0  !important ;
+  padding: 0  !important ;
+  white-space: nowrap  !important ;
+  clip-path: inset(100%)  !important ;
+  clip: rect(0 0 0 0)  !important ;
+  overflow: hidden  !important ;
+}

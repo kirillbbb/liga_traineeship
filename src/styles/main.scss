@@ -1,0 +1,11 @@
+
+// 1. Foundation (Основа)
+@import 'modules/variables';
+@import 'modules/normalize';
+@import 'modules/globals';
+
+// 2. Components (Компоненты)
+@import 'modules/buttons';
+@import 'modules/fields';
+@import 'modules/todo-app';
+@import 'modules/task-item';

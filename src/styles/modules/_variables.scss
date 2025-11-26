@@ -1,0 +1,32 @@
+
+$color-white: #FFFFFF;
+$color-black: #000000;
+$color-dark-1: #1E1E1E;
+$color-dark-2: #2C2C2C;
+$color-gray-1: #F5F5F5;
+$color-gray-2: #D9D9D9;
+$color-gray-3: #B3B3B3;
+$color-gray-4: #757575;
+
+$border: 1px solid $color-gray-2;
+$border-radius: 8px;
+$box-shadow: 0 4px 4px -4px rgba(12, 12, 13, 0.05), 0 16px 32px -4px rgba(12, 12, 13, 0.1);
+$input-height: 40px;
+$transition-duration: 0.2s;
+
+:root {
+
+  --color-white: #{$color-white};
+  --color-black: #{$color-black};
+  --color-dark-1: #{$color-dark-1};
+  --color-dark-2: #{$color-dark-2};
+  --color-gray-1: #{$color-gray-1};
+  --color-gray-2: #{$color-gray-2};
+  --color-gray-3: #{$color-gray-3};
+  --color-gray-4: #{$color-gray-4};
+  --border: #{$border};
+  --border-radius: #{$border-radius};
+  --box-shadow: #{$box-shadow};
+  --input-height: #{$input-height};
+  --transition-duration: #{$transition-duration};
+}

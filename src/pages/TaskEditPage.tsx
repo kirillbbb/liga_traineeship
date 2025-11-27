@@ -8,10 +8,9 @@ import { updateTask } from 'api/tasksActions';
 import { Task, TaskFormValues } from 'api/tasksApi';
 
 import { Loader } from 'components/Loader';
-// Убедитесь, что путь импорта соответствует регистру вашей папки ('modal' или 'Modal')
 import { TaskModal } from 'components/modal';
 
-// Предполагаем, что BASE_URL теперь экспортируется из API файлов
+
 const BASE_URL = 'https://tasks-service-maks1394.amvera.io';
 
 const TaskEditPage: React.FC = () => {
@@ -62,7 +61,7 @@ const TaskEditPage: React.FC = () => {
       const resultAction = await dispatch(updateTask({ id, body: data }));
 
       if (updateTask.fulfilled.match(resultAction)) {
-        navigate(-1); // Закрывается модальное окно через навигацию
+        navigate(-1);
       } else {
         setError('Не удалось сохранить изменения. Попробуйте снова.');
         console.error('Failed to update task:', resultAction.payload || resultAction.error);

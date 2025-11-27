@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import TaskItem from './components/TaskItem';
 import { useAppSelector, useAppDispatch } from 'hooks/reduxHooks';
 import { RootState, GetTasksParams } from 'api/tasksApi';

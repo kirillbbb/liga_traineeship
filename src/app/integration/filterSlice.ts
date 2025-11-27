@@ -2,14 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface FilterState {
   search: string;
-  // ✅ ИСПРАВЛЕНИЕ: Используем 'boolean | null' для поддержки 3 состояний
   isCompleted: boolean | null;
   isImportant: boolean | null;
 }
 
 const initialState: FilterState = {
   search: '',
-  // ✅ ИСПРАВЛЕНИЕ: Начальное состояние 'null' означает "показывать все"
   isCompleted: null,
   isImportant: null,
 };
@@ -20,14 +18,13 @@ export const filterSlice = createSlice({
     setSearch: (state, action: PayloadAction<string>) => {
       state.search = action.payload;
     },
-    // ✅ ИСПРАВЛЕНИЕ: Переключение между null (Все), true (Только True) и false (Только False)
     toggleCompleted: (state) => {
       if (state.isCompleted === null) {
-        state.isCompleted = true; // null (Все) -> true (Только выполненные)
+        state.isCompleted = true;
       } else if (state.isCompleted === true) {
-        state.isCompleted = false; // true -> false (Только невыполненные)
+        state.isCompleted = false;
       } else {
-        state.isCompleted = null; // false -> null (Все)
+        state.isCompleted = null;
       }
     },
     toggleImportant: (state) => {

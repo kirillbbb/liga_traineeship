@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -28,6 +28,11 @@ interface Props {
   isSubmitting?: boolean;
 }
 
+const sharedInputStyle: CSSProperties = {
+  padding: '10px 12px',
+  boxSizing: 'border-box',
+};
+
 const TaskFormComponent: React.FC<Props> = ({ onSubmit, initialData, onCancel, isSubmitting = false }) => {
   const {
     handleSubmit,
@@ -55,7 +60,7 @@ const TaskFormComponent: React.FC<Props> = ({ onSubmit, initialData, onCancel, i
           <TextField
             {...field}
             label="Название задачи"
-            placeholder="Что нужно сделать?"
+            inputStyle={sharedInputStyle}
             errorText={errors.name?.message as string | undefined}
             disabled={isSubmitting}
           />
@@ -69,9 +74,9 @@ const TaskFormComponent: React.FC<Props> = ({ onSubmit, initialData, onCancel, i
           <TextField
             {...field}
             label="Описание"
-            placeholder="Подробности (необязательно)"
             multiline
-            rows={3}
+            rows={5}
+            inputStyle={sharedInputStyle}
             errorText={errors.info?.message as string | undefined}
             disabled={isSubmitting}
           />

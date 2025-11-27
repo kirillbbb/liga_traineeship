@@ -7,14 +7,17 @@ export interface TaskFormValues {
   isCompleted?: boolean;
   isImportant?: boolean;
 }
+
 export interface Task extends TaskFormValues {
   id: string;
 }
+
 export interface FiltersState {
   search: string;
   isCompleted?: boolean | null;
   isImportant?: boolean | null;
 }
+
 export interface GetTasksParams extends Partial<FiltersState> {
   name_like?: string;
 }
@@ -30,6 +33,12 @@ const initialTaskState: TaskState = {
   isLoading: false,
   error: null,
 };
+
+export interface APIQueryParams {
+  name_like?: string;
+  isCompleted?: string;
+  isImportant?: string;
+}
 
 const taskSlice = createSlice({
   name: 'tasks',
@@ -60,7 +69,7 @@ const taskSlice = createSlice({
     builder.addCase(updateTask.fulfilled, (state, action) => {
       const index = state.tasks.findIndex((task) => task.id === action.payload.id);
       if (index !== -1) {
-        state.tasks[index] = action.payload; // Заменяем задачу обновленной версией
+        state.tasks[index] = action.payload;
       }
     });
   },
@@ -81,23 +90,31 @@ export const filtersSlice = createSlice({
     setSearch: (state, action: PayloadAction<string>) => {
       state.search = action.payload;
     },
-    setIsCompleted: (state, action: PayloadAction<boolean | null>) => {
-      state.isCompleted = action.payload;
+    toggleCompleted: (state) => {
+      if (state.isCompleted === true) {
+        state.isCompleted = null;
+      } else {
+        state.isCompleted = true;
+      }
     },
-    setIsImportant: (state, action: PayloadAction<boolean | null>) => {
-      state.isImportant = action.payload;
+    toggleImportant: (state) => {
+      if (state.isImportant === true) {
+        state.isImportant = null;
+      } else {
+        state.isImportant = true;
+      }
     },
     resetFilters: () => initialFiltersState,
   },
 });
 
-export const { setSearch, setIsCompleted, setIsImportant, resetFilters } = filtersSlice.actions;
+export const { setSearch, toggleCompleted, toggleImportant, resetFilters } = filtersSlice.actions;
 export const filtersReducer = filtersSlice.reducer;
 
 export const store = configureStore({
   reducer: {
-    tasks: taskReducer, // ✅ Task Slice
-    filters: filtersReducer, // ✅ Filters Slice
+    tasks: taskReducer,
+    filters: filtersReducer,
   },
 });
 

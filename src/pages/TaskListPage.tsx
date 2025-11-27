@@ -2,7 +2,8 @@ import React from 'react';
 
 import TaskList from 'app/taskList/TaskList';
 import TaskFilters from 'app/taskList/components/TaskFilters';
-import { TaskAdd } from 'app/taskAdd/TaskAdd';
+// 🛑 УДАЛЕН ИМПОРТ TaskAdd, так как он используется внутри TaskFilters
+// import { TaskAdd } from 'app/taskAdd/TaskAdd';
 import { PageContainer } from 'components/PageContainer';
 
 const TaskListPage: React.FC = () => {
@@ -10,12 +11,15 @@ const TaskListPage: React.FC = () => {
     <PageContainer>
       <h1 className="mb-4">Task Management</h1>
 
-      <div className="mb-4">
+      {/* 🛑 УДАЛЕН БЛОК С ЯВНОЙ КНОПКОЙ TaskAdd!
+          Она теперь рендерится внутри TaskFilters.
+      */}
+      {/* <div className="mb-4">
         <TaskAdd />
-      </div>
+      </div> */}
 
       <div className="mb-4">
-        <TaskFilters />
+        <TaskFilters /> {/* 👈 КНОПКА РЕНДЕРИТСЯ ВНУТРИ TaskFilters */}
       </div>
       <div className="todo-list-section">
         <TaskList />

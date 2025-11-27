@@ -1,9 +1,6 @@
-/* src/styles/modules/_fields.scss */
-
 .field {
   position: relative;
 
-  /* АНИМАЦИЯ ПЛЕЙСХОЛДЕРА */
   &:focus-within .field__label,
   &:has(.field__input:not(:placeholder-shown)) .field__label,
   &:has(textarea:not(:placeholder-shown)) .field__label {
@@ -41,14 +38,12 @@
     outline: none;
   }
 
-  /* Стили для Textarea */
   &[type="textarea"] {
     height: auto;
     min-height: 80px;
     padding-top: 10px;
   }
 
-  /* Стиль для поиска без иконки */
   &[type="search"]:placeholder-shown {
     padding-right: var(--fieldInputPaddingX);
   }

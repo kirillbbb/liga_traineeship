@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useAppSelector, useAppDispatch } from '../../hooks/reduxHooks';
-import { TaskAdd } from '../taskAdd/TaskAdd';
 import TaskItem from './components/TaskItem';
 import { RootState, GetTasksParams } from 'api/tasksApi';
 
@@ -13,21 +12,18 @@ const TaskListComponent: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const { tasks, isLoading, error } = useAppSelector((state: RootState) => state.tasks);
-  const filtersState = useAppSelector((state: RootState) => state.filters);
 
-  // Мемоизация фильтров для useEffect
-  const filters: GetTasksParams = useMemo(
-    () => ({
-      isCompleted: filtersState.isCompleted ?? undefined,
-      isImportant: filtersState.isImportant ?? undefined,
-      name_like: filtersState.search.trim() || undefined,
-    }),
-    [filtersState.isCompleted, filtersState.isImportant, filtersState.search]
-  );
+  const { isCompleted, isImportant, search } = useAppSelector((state: RootState) => state.filters);
 
   useEffect(() => {
+    const filters: GetTasksParams = {
+      isCompleted: isCompleted ?? undefined,
+      isImportant: isImportant ?? undefined,
+      name_like: search.trim() || undefined,
+    };
+
     dispatch(fetchTasks(filters));
-  }, [dispatch, filters]);
+  }, [dispatch, isCompleted, isImportant, search]);
 
   const handleDeleteTask = useCallback(
     (taskId: string) => {
@@ -61,15 +57,11 @@ const TaskListComponent: React.FC = () => {
   }
 
   return (
-    <PageContainer title="Список Задач">
-      <TaskAdd />
-      <div className="list-group">
+    <PageContainer>
+      <div className="list-group gap-3">
         {displayTasks.map((task) => (
           <TaskItem key={task.id} task={task} onDelete={handleDeleteTask} onToggleComplete={handleToggleComplete} />
         ))}
-        {!isLoading && displayTasks.length === 0 && (
-          <p className="text-center text-muted mt-4">Задачи по текущим фильтрам не найдены.</p>
-        )}
       </div>
     </PageContainer>
   );

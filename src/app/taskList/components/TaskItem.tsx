@@ -1,5 +1,3 @@
-// src/app/taskList/components/TaskItem.tsx
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Checkbox from '@mui/material/Checkbox';
@@ -10,14 +8,13 @@ interface Props {
   onDelete: (taskId: string) => void;
   onToggleComplete: (taskId: string, isCompleted: boolean) => void;
 }
-
 const TaskItemComponent: React.FC<Props> = ({ task, onDelete, onToggleComplete }) => {
   const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
     onToggleComplete(task.id, e.target.checked);
   };
 
   return (
-    <div className="todo-item">
+    <div className="todo-item task-item">
       <Checkbox
         checked={task.isCompleted}
         onChange={handleToggle}
@@ -25,6 +22,7 @@ const TaskItemComponent: React.FC<Props> = ({ task, onDelete, onToggleComplete }
         sx={{
           padding: 0,
           marginLeft: '6px',
+          // Оставлены стили Mui
           '&.Mui-checked + .todo-item__label': {
             color: 'var(--color-gray-4)',
             textDecoration: 'line-through',
@@ -33,15 +31,16 @@ const TaskItemComponent: React.FC<Props> = ({ task, onDelete, onToggleComplete }
       />
 
       <div className="todo-item__label">
-        <span className="todo-item__title">{task.name}</span>
+        <div className="todo-item__header">
+          <span className="todo-item__title">{task.name}</span>
+          {task.isImportant && (
+            <span className="ms-2 text-warning task-important-star">
+              <i className="fa fa-star" aria-hidden="true" />
+            </span>
+          )}
+        </div>
 
         {task.info && <p className="todo-item__description text-muted">{task.info}</p>}
-
-        {task.isImportant && (
-          <span className="ms-2 text-warning" style={{ color: '#FFC107' }}>
-            <i className="fa fa-star" aria-hidden="true" />
-          </span>
-        )}
       </div>
 
       <div className="todo-item__actions">

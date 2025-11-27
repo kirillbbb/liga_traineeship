@@ -1,7 +1,19 @@
-// src/components/TextField.tsx
+import React, { InputHTMLAttributes, CSSProperties } from 'react';
 
-import React, { InputHTMLAttributes } from 'react';
-import { TextFieldProps } from './TextField.types';
+interface CustomTextFieldProps {
+  label: string;
+  containerClassName?: string;
+  inputType?: InputHTMLAttributes<HTMLInputElement>['type'];
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onBlur: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  errorText?: string;
+  multiline?: boolean;
+  rows?: number;
+  disabled?: boolean;
+  inputStyle?: CSSProperties;
+  placeholder?: string;
+}
 
 export function TextField({
   label,
@@ -13,17 +25,24 @@ export function TextField({
   errorText,
   multiline = false,
   rows = 3,
-}: // ... все остальные пропсы
-TextFieldProps) {
+  disabled = false,
+  inputStyle = {},
+  placeholder,
+}: CustomTextFieldProps) {
   const InputElement = multiline ? 'textarea' : 'input';
-  const inputProps = multiline ? { rows } : { type: inputType };
 
-  // ✅ ИСПРАВЛЕНИЕ 1: Создание безопасного и уникального ID
+  const inputProps = {
+    ...(multiline ? { rows } : { type: inputType }),
+    style: inputStyle,
+    disabled: disabled,
+  };
+
   const uniqueId = `field-${label.replace(/\s/g, '-').toLowerCase()}`;
+
+  const finalPlaceholder = placeholder || ' ';
 
   return (
     <div className={`field mb-3 ${containerClassName}`}>
-      {/* 2. Используем уникальный ID для связки */}
       <label htmlFor={uniqueId} className="field__label">
         {label}
       </label>
@@ -31,11 +50,9 @@ TextFieldProps) {
       <InputElement
         {...inputProps}
         className="field__input"
-        id={uniqueId} // ✅ ID теперь уникальный
-        // ✅ КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 2: Плейсхолдер для анимации
-        placeholder=" "
+        id={uniqueId}
+        placeholder={finalPlaceholder}
         value={value}
-        // Убрано "as any", если в TextFieldProps верные типы
         onChange={onChange}
         onBlur={onBlur}
       />

@@ -43,7 +43,7 @@ export function TaskAdd() {
   }, []);
 
   return (
-    <div className="mb-4">
+    <div>
       <button
         className={`btn ${isAdding ? 'btn-secondary' : 'btn-success'}`}
         onClick={() => setIsAdding(!isAdding)}

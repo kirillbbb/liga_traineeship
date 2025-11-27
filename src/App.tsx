@@ -5,7 +5,6 @@ import { CssBaseline, Container } from '@mui/material';
 import TaskEditPage from './pages/TaskEditPage';
 import TaskListPage from './pages/TaskListPage';
 
-
 const App = () => {
   return (
     <>

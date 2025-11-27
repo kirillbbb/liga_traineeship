@@ -35,7 +35,7 @@ const TaskFilters: React.FC = () => {
           className="form-check-input"
           type="checkbox"
           id="completedOnly"
-          checked={isCompleted}
+          checked={isCompleted ?? false}
           onChange={handleCompletedToggle}
         />
         <label className="form-check-label" htmlFor="completedOnly">
@@ -48,7 +48,7 @@ const TaskFilters: React.FC = () => {
           className="form-check-input"
           type="checkbox"
           id="importantOnly"
-          checked={isImportant}
+          checked={isImportant ?? false}
           onChange={handleImportantToggle}
         />
         <label className="form-check-label" htmlFor="importantOnly">

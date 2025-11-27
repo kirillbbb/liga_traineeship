@@ -3,7 +3,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Checkbox from '@mui/material/Checkbox';
-import { Task } from 'types/task';
+import { Task } from 'api/tasksApi';
 
 interface Props {
   task: Task;
@@ -18,17 +18,13 @@ const TaskItemComponent: React.FC<Props> = ({ task, onDelete, onToggleComplete }
 
   return (
     <div className="todo-item">
-      {/* 1. ✅ MUI Checkbox */}
-      {/* Теперь MUI управляет иконками CheckBoxOutlineBlankIcon и CheckBoxIcon */}
       <Checkbox
         checked={task.isCompleted}
         onChange={handleToggle}
-        color="primary" // Использует цвет 'dark', который мы настроили в theme.ts
-        // Использование SX prop для стилизации и сохранения SCSS-логики зачеркивания:
+        color="primary"
         sx={{
           padding: 0,
-          marginLeft: '6px', // Небольшой отступ, чтобы выглядело аккуратно
-          // Это CSS-селектор для SCSS-логики: если чекбокс отмечен, зачеркнуть соседнюю метку
+          marginLeft: '6px',
           '&.Mui-checked + .todo-item__label': {
             color: 'var(--color-gray-4)',
             textDecoration: 'line-through',
@@ -36,9 +32,11 @@ const TaskItemComponent: React.FC<Props> = ({ task, onDelete, onToggleComplete }
         }}
       />
 
-      {/* 2. Контент Задачи (Название) */}
       <div className="todo-item__label">
-        <span className="todo-item__title">{task.title}</span>
+        <span className="todo-item__title">{task.name}</span>
+
+        {task.info && <p className="todo-item__description text-muted">{task.info}</p>}
+
         {task.isImportant && (
           <span className="ms-2 text-warning" style={{ color: '#FFC107' }}>
             <i className="fa fa-star" aria-hidden="true" />
@@ -46,14 +44,11 @@ const TaskItemComponent: React.FC<Props> = ({ task, onDelete, onToggleComplete }
         )}
       </div>
 
-      {/* 3. КОНТЕЙНЕР ДЕЙСТВИЙ */}
       <div className="todo-item__actions">
-        {/* Иконка Редактирования */}
         <Link to={`/tasks/edit/${task.id}`} style={{ textDecoration: 'none', color: 'var(--color-gray-4)' }}>
           <i className="fa fa-pencil" aria-hidden="true" />
         </Link>
 
-        {/* Иконка Удаления */}
         <button onClick={() => onDelete(task.id)} className="todo-item__delete-button" type="button">
           <i className="fa fa-trash" aria-hidden="true" />
         </button>
@@ -61,4 +56,5 @@ const TaskItemComponent: React.FC<Props> = ({ task, onDelete, onToggleComplete }
     </div>
   );
 };
+
 export default React.memo(TaskItemComponent);

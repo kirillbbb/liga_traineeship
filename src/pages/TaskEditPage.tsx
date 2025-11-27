@@ -1,43 +1,64 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
+import { useAppDispatch } from '../hooks/reduxHooks';
+import { updateTask } from '../api/tasksActions';
+import { Task, TaskFormValues } from '../api/tasksApi';
+
+import TaskForm from '../app/taskAdd/components/TaskForm';
 import { PageContainer } from 'components/PageContainer';
 import { Loader } from 'components/Loader';
 
-import TaskForm from 'app/taskAdd/components/TaskForm';
-import { TaskFormValues } from 'app/taskAdd/validation';
-
-import { useGetTaskQuery, useUpdateTaskMutation } from 'services/taskApi';
-import { Task } from 'types/task';
+const BASE_URL = 'https://tasks-service-maks1394.amvera.io';
 
 const TaskEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const {
-    data: initialData,
-    isLoading: isFetching,
-    isError: isFetchError,
-  } = useGetTaskQuery(id || '', {
-    skip: !id,
-  });
+  const [task, setTask] = useState<Task | null>(null);
+  const [isFetching, setIsFetching] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const [updateTask, { isLoading: isUpdating, isError: isUpdateError }] = useUpdateTaskMutation();
-
-  const handleSubmit = async (data: TaskFormValues) => {
+  useEffect(() => {
     if (!id) return;
-    try {
-      await updateTask({
-        id,
-        body: {
-          ...data,
-        },
-      }).unwrap();
-      navigate(-1);
-    } catch (error) {
-      console.error('Failed to update task:', error);
-    }
-  };
+
+    const fetchTask = async () => {
+      setIsFetching(true);
+      setError(null);
+      try {
+        const response = await axios.get<Task>(`${BASE_URL}/tasks/${id}`);
+        setTask(response.data);
+      } catch (e) {
+        setError('Ошибка загрузки задачи. Возможно, задача с этим ID не найдена.');
+      } finally {
+        setIsFetching(false);
+      }
+    };
+    fetchTask();
+  }, [id]);
+
+  const handleSubmit = useCallback(
+    async (data: TaskFormValues) => {
+      if (!id) return;
+
+      setIsUpdating(true);
+      setError(null);
+
+      const resultAction = await dispatch(updateTask({ id, body: data }));
+
+      if (updateTask.fulfilled.match(resultAction)) {
+        navigate(-1);
+      } else {
+        setError('Не удалось сохранить изменения. Попробуйте снова.');
+        console.error('Failed to update task:', resultAction.payload || resultAction.error);
+      }
+      setIsUpdating(false);
+    },
+    [dispatch, id, navigate]
+  );
 
   const handleCancel = () => {
     navigate(-1);
@@ -53,28 +74,27 @@ const TaskEditPage: React.FC = () => {
     );
   }
 
-  if (isFetchError || !initialData) {
+  if (error || !task) {
     return (
       <PageContainer>
-        <div className="alert alert-danger">Ошибка загрузки задачи или задача с ID **{id}** не найдена.</div>
+        <div className="alert alert-danger">{error || `Задача с ID **${id}** не найдена.`}</div>
       </PageContainer>
     );
   }
+
   const formProps: TaskFormValues = {
-    title: initialData.title ?? '',
-    description: initialData.description ?? '',
-    isCompleted: initialData.isCompleted ?? false,
-    isImportant: initialData.isImportant ?? false,
+    name: task.name ?? '',
+    info: task.info ?? '',
+    isCompleted: task.isCompleted ?? false,
+    isImportant: task.isImportant ?? false,
   };
 
   return (
     <PageContainer>
       <div className="task-edit-page">
-        <h1>Редактировать задачу: {initialData.title}</h1>
+        <h1>Редактировать задачу: {task.name}</h1>
 
-        {isUpdateError && (
-          <div className="alert alert-warning mb-3">Не удалось сохранить изменения. Попробуйте снова.</div>
-        )}
+        {error && <div className="alert alert-warning mb-3">{error}</div>}
 
         <TaskForm initialData={formProps} onSubmit={handleSubmit} onCancel={handleCancel} isSubmitting={isUpdating} />
       </div>

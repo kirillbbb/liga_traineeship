@@ -1,74 +1,78 @@
-// src/app/taskList/TaskList.tsx
-
-import React, { useCallback } from 'react';
-
-// ✅ ИСПРАВЛЕНИЕ 1: Импорт RootState (для типизации Redux)
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { useAppSelector, useAppDispatch } from '../../hooks/reduxHooks';
+import { TaskAdd } from '../taskAdd/TaskAdd';
 import TaskItem from './components/TaskItem';
-import { RootState } from 'app/integration/store';
-import { useAppSelector } from 'app/integration/hooks';
+import { RootState, GetTasksParams } from 'api/tasksApi';
 
-import { useGetTasksQuery, useDeleteTaskMutation, useUpdateTaskMutation } from 'services/taskApi';
-import { Task, GetTasksParams } from 'types/task';
+import { fetchTasks, deleteTask, updateTask } from 'api/tasksActions';
+
 import { Loader } from 'components/Loader';
 import { PageContainer } from 'components/PageContainer';
-import { TaskAdd } from 'app/taskAdd/TaskAdd';
 
 const TaskListComponent: React.FC = () => {
-  const filtersState = useAppSelector((state) => state.filters);
+  const dispatch = useAppDispatch();
 
-  const filters: GetTasksParams = {
-    isCompleted: filtersState.isCompleted || undefined,
-    isImportant: filtersState.isImportant || undefined,
-    name_like: filtersState.search.trim() || undefined,
-  };
+  const { tasks, isLoading, error } = useAppSelector((state: RootState) => state.tasks);
+  const filtersState = useAppSelector((state: RootState) => state.filters);
 
-  const { data: tasks, isLoading, isError, error } = useGetTasksQuery(filters);
-  const [deleteTask] = useDeleteTaskMutation();
-  const [updateTask] = useUpdateTaskMutation();
+  // Мемоизация фильтров для useEffect
+  const filters: GetTasksParams = useMemo(
+    () => ({
+      isCompleted: filtersState.isCompleted ?? undefined,
+      isImportant: filtersState.isImportant ?? undefined,
+      name_like: filtersState.search.trim() || undefined,
+    }),
+    [filtersState.isCompleted, filtersState.isImportant, filtersState.search]
+  );
+
+  useEffect(() => {
+    dispatch(fetchTasks(filters));
+  }, [dispatch, filters]);
 
   const handleDeleteTask = useCallback(
     (taskId: string) => {
-      deleteTask(taskId);
+      dispatch(deleteTask(taskId));
     },
-    [deleteTask]
+    [dispatch]
   );
 
   const handleToggleComplete = useCallback(
     (taskId: string, isCompleted: boolean) => {
-      updateTask({
-        id: taskId,
-        body: {
-          isCompleted: isCompleted,
-        },
-      });
+      dispatch(
+        updateTask({
+          id: taskId,
+          body: {
+            isCompleted: isCompleted,
+          },
+        })
+      );
     },
-    [updateTask]
+    [dispatch]
   );
 
-  const displayTasks: Task[] = tasks || [];
+  const displayTasks = tasks || [];
+
+  if (isLoading && !displayTasks.length) {
+    return <Loader isLoading={true} />;
+  }
+
+  if (error) {
+    return <PageContainer>Ошибка загрузки: {error}</PageContainer>;
+  }
 
   return (
-    <PageContainer>
-      <Loader isLoading={isLoading}>
-        {isError && (
-          <div className="alert alert-danger" role="alert">
-            Error loading tasks: {JSON.stringify(error)}
-          </div>
+    <PageContainer title="Список Задач">
+      <TaskAdd />
+      <div className="list-group">
+        {displayTasks.map((task) => (
+          <TaskItem key={task.id} task={task} onDelete={handleDeleteTask} onToggleComplete={handleToggleComplete} />
+        ))}
+        {!isLoading && displayTasks.length === 0 && (
+          <p className="text-center text-muted mt-4">Задачи по текущим фильтрам не найдены.</p>
         )}
-
-        {displayTasks.length === 0 && !isLoading ? (
-          <p className="mt-4">No tasks found.</p>
-        ) : (
-          <div className="list-group">
-            {displayTasks.map((task) => (
-              <TaskItem key={task.id} task={task} onDelete={handleDeleteTask} onToggleComplete={handleToggleComplete} />
-            ))}
-          </div>
-        )}
-      </Loader>
+      </div>
     </PageContainer>
   );
 };
 
-const TaskList = React.memo(TaskListComponent);
-export default TaskList;
+export default TaskListComponent;

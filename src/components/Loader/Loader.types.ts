@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import React from 'react';
 
 export interface LoaderProps {
   isLoading: boolean;
-  children: ReactNode;
-  variant?: 'dot' | 'circle';
+  children?: React.ReactNode;
+  variant?: 'circle' | 'dot';
 }

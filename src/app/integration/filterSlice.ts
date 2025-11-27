@@ -11,7 +11,6 @@ const initialState: FilterState = {
   isCompleted: false,
   isImportant: false,
 };
-
 export const filterSlice = createSlice({
   name: 'filters',
   initialState,

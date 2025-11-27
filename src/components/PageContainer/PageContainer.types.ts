@@ -1,5 +1,8 @@
-import { ReactNode } from 'react';
+
+import React from 'react';
+
 export interface PageContainerProps {
-  children: ReactNode;
+  children: React.ReactNode;
   className?: string;
+  title?: string;
 }

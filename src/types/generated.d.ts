@@ -3,9 +3,8 @@
  * Do not make direct changes to the file.
  */
 
-
 export interface paths {
-  "/tasks": {
+  '/tasks': {
     /** Получить все задачи (с фильтрацией) */
     get: {
       parameters: {
@@ -19,7 +18,7 @@ export interface paths {
         /** @description Успешное получение списка задач */
         200: {
           content: {
-            "application/json": components["schemas"]["Task"][];
+            'application/json': components['schemas']['Task'][];
           };
         };
       };
@@ -28,20 +27,20 @@ export interface paths {
     post: {
       requestBody?: {
         content: {
-          "application/json": components["schemas"]["CreateTaskDto"];
+          'application/json': components['schemas']['CreateTaskDto'];
         };
       };
       responses: {
         /** @description Задача успешно создана */
         201: {
           content: {
-            "application/json": components["schemas"]["Task"];
+            'application/json': components['schemas']['Task'];
           };
         };
       };
     };
   };
-  "/tasks/{id}": {
+  '/tasks/{id}': {
     /** Получить задачу по ID */
     get: {
       parameters: {
@@ -53,7 +52,7 @@ export interface paths {
         /** @description Успешное получение задачи */
         200: {
           content: {
-            "application/json": components["schemas"]["Task"];
+            'application/json': components['schemas']['Task'];
           };
         };
       };
@@ -69,7 +68,7 @@ export interface paths {
         /** @description Задача успешно удалена */
         200: {
           content: {
-            "application/json": {
+            'application/json': {
               success?: boolean;
               id?: string;
             };
@@ -86,14 +85,14 @@ export interface paths {
       };
       requestBody?: {
         content: {
-          "application/json": components["schemas"]["UpdateTaskDto"];
+          'application/json': components['schemas']['UpdateTaskDto'];
         };
       };
       responses: {
         /** @description Задача успешно обновлена */
         200: {
           content: {
-            "application/json": components["schemas"]["Task"];
+            'application/json': components['schemas']['Task'];
           };
         };
       };

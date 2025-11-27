@@ -1,11 +1,23 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+import { TaskFormValues } from 'api/tasksApi';
 
 import { Button } from 'components/Button/Button';
-import { taskValidationSchema, TaskFormValues } from 'app/taskAdd/validation';
 import { Checkbox } from 'components/Checkbox';
 import { TextField } from 'components/TextField';
+
+export const taskValidationSchema = yup.object({
+  name: yup.string().required('Название обязательно').max(100, 'Название не должно превышать 100 символов').defined(),
+
+  info: yup.string().max(500, 'Описание не должно превышать 500 символов').default('').defined(),
+
+  isCompleted: yup.boolean().required().default(false).defined(),
+
+  isImportant: yup.boolean().required().default(false).defined(),
+});
 
 type FormData = TaskFormValues;
 
@@ -24,8 +36,8 @@ const TaskFormComponent: React.FC<Props> = ({ onSubmit, initialData, onCancel, i
     formState: { errors },
   } = useForm<TaskFormValues>({
     defaultValues: {
-      title: initialData?.title ?? '',
-      description: initialData?.description ?? '',
+      name: initialData?.name ?? '',
+      info: initialData?.info ?? '',
       isCompleted: initialData?.isCompleted ?? false,
       isImportant: initialData?.isImportant ?? false,
     },
@@ -37,21 +49,21 @@ const TaskFormComponent: React.FC<Props> = ({ onSubmit, initialData, onCancel, i
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Controller
-        name="title"
+        name="name"
         control={control}
         render={({ field }) => (
           <TextField
             {...field}
             label="Название задачи"
             placeholder="Что нужно сделать?"
-            errorText={errors.title?.message}
+            errorText={errors.name?.message as string | undefined}
             disabled={isSubmitting}
           />
         )}
       />
 
       <Controller
-        name="description"
+        name="info"
         control={control}
         render={({ field }) => (
           <TextField
@@ -60,7 +72,7 @@ const TaskFormComponent: React.FC<Props> = ({ onSubmit, initialData, onCancel, i
             placeholder="Подробности (необязательно)"
             multiline
             rows={3}
-            errorText={errors.description?.message}
+            errorText={errors.info?.message as string | undefined}
             disabled={isSubmitting}
           />
         )}
@@ -73,7 +85,7 @@ const TaskFormComponent: React.FC<Props> = ({ onSubmit, initialData, onCancel, i
           render={({ field: { value: rhfValue, ...restField } }) => (
             <Checkbox
               {...restField}
-              checked={rhfValue}
+              checked={rhfValue ?? false}
               onChange={(e) => restField.onChange(e.target.checked)}
               label="Важная задача"
               disabled={isSubmitting}
@@ -86,7 +98,7 @@ const TaskFormComponent: React.FC<Props> = ({ onSubmit, initialData, onCancel, i
           render={({ field: { value: rhfValue, ...restField } }) => (
             <Checkbox
               {...restField}
-              checked={rhfValue}
+              checked={rhfValue ?? false}
               onChange={(e) => restField.onChange(e.target.checked)}
               label="Завершено"
               disabled={isSubmitting}

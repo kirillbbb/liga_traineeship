@@ -10,7 +10,6 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
 export const axiosBaseQuery =
   (
     { baseUrl }: { baseUrl?: string } = {

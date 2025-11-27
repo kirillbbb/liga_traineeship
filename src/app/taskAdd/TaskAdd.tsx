@@ -1,9 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import { useAppDispatch } from '../../hooks/reduxHooks';
-import { createTask } from '../../api/tasksActions';
-import { TaskFormValues } from '../../api/tasksApi';
-
 import TaskForm from './components/TaskForm';
+import { useAppDispatch } from 'hooks/reduxHooks';
+import { createTask } from 'api/tasksActions';
+import { TaskFormValues } from 'api/tasksApi';
 
 export function TaskAdd() {
   const dispatch = useAppDispatch();
@@ -29,7 +28,7 @@ export function TaskAdd() {
         }
       } catch (err) {
         setIsCreateError(true);
-        console.error('An unexpected error occurred:', err);
+        console.error('An unexpected error:', err);
       } finally {
         setIsCreating(false);
       }
@@ -52,7 +51,7 @@ export function TaskAdd() {
       </button>
       {isAdding && (
         <div className="card p-4 mt-3">
-          <h2>Создать новую задачу</h2>
+          <h2>Создать задачу</h2>
 
           {isCreateError && <div className="text-danger mb-3">Не удалось сохранить задачу. Попробуйте снова.</div>}
 

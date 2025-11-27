@@ -3,10 +3,9 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from '@mui/material/styles';
 
-import { store } from './api/tasksApi';
-
 import App from './App';
 import theme from './theme';
+import { store } from 'api/tasksApi';
 
 import './styles/main.scss';
 

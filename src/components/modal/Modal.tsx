@@ -9,7 +9,6 @@ interface ModalProps {
 
 export const TaskModal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   useEffect(() => {
-    // Блокируем скролл страницы при открытой модалке
     if (isOpen) document.body.style.overflow = 'hidden';
     else document.body.style.overflow = '';
     return () => {

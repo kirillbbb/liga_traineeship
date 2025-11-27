@@ -9,8 +9,7 @@ interface BaseTextFieldProps {
   inputType?: string;
 }
 
-type StandardInputAttributes =
-  InputHTMLAttributes<HTMLInputElement> & TextareaHTMLAttributes<HTMLTextAreaElement>;
+type StandardInputAttributes = InputHTMLAttributes<HTMLInputElement> & TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 type UniversalChangeHandler = ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 type UniversalFocusHandler = FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
@@ -21,5 +20,4 @@ export interface TextFieldProps
   value?: string | number | readonly string[];
   onChange?: UniversalChangeHandler;
   onBlur?: UniversalFocusHandler;
-
 }

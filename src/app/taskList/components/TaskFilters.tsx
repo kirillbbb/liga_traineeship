@@ -9,7 +9,6 @@ const TaskFilters: React.FC = () => {
   const { search: reduxSearch, isCompleted, isImportant } = useAppSelector((state) => state.filters);
   const [localSearch, setLocalSearch] = useState(reduxSearch);
 
-  // --- ЛОГИКА DEBOUNCE, handleLocalSearchChange, handleCompletedToggle, handleImportantToggle без изменений ---
   useEffect(() => {
     const handler = setTimeout(() => {
       if (localSearch !== reduxSearch) {
@@ -39,14 +38,13 @@ const TaskFilters: React.FC = () => {
         <input
           type="text"
           className="form-control"
-          placeholder="Search tasks..."
+          placeholder="Поиск задач..."
           value={localSearch}
           onChange={handleLocalSearchChange}
         />
       </div>
 
       <div className="text-center mb-3">
-        {/* TaskAdd (кнопка + форма) */}
         <TaskAdd />
       </div>
       <div className="d-flex justify-content-center align-items-center gap-3">
@@ -60,7 +58,7 @@ const TaskFilters: React.FC = () => {
             onChange={handleImportantToggle}
           />
           <label className="form-check-label" htmlFor="importantOnly">
-            Important Only
+            Показать важные
           </label>
         </div>
 
@@ -73,7 +71,7 @@ const TaskFilters: React.FC = () => {
             onChange={handleCompletedToggle}
           />
           <label className="form-check-label" htmlFor="completedOnly">
-            Completed Only
+            Показать выполненные
           </label>
         </div>
       </div>

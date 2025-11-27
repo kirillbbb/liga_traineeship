@@ -2,8 +2,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { CssBaseline, Container } from '@mui/material';
 
-import TaskEditPage from './pages/TaskEditPage';
-import TaskListPage from './pages/TaskListPage';
+import TaskEditPage from 'pages/TaskEditPage';
+import TaskListPage from 'pages/TaskListPage';
 
 const App = () => {
   return (

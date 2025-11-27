@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { useAppSelector, useAppDispatch } from '../../hooks/reduxHooks';
 import TaskItem from './components/TaskItem';
+import { useAppSelector, useAppDispatch } from 'hooks/reduxHooks';
 import { RootState, GetTasksParams } from 'api/tasksApi';
 
 import { fetchTasks, deleteTask, updateTask } from 'api/tasksActions';

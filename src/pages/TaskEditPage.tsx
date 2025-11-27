@@ -2,11 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-import { useAppDispatch } from '../hooks/reduxHooks';
-import { updateTask } from '../api/tasksActions';
-import { Task, TaskFormValues } from '../api/tasksApi';
-
 import TaskForm from '../app/taskAdd/components/TaskForm';
+import { useAppDispatch } from 'hooks/reduxHooks';
+import { updateTask } from 'api/tasksActions';
+import { Task, TaskFormValues } from 'api/tasksApi';
+
 import { Loader } from 'components/Loader';
 // Убедитесь, что путь импорта соответствует регистру вашей папки ('modal' или 'Modal')
 import { TaskModal } from 'components/modal';
